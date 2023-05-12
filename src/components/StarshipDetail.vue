@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { getStarshipDetail } from '../api/getStarships';
 import defaultImg from '../assets/images/default.jpg'
 import Layout from './Layout.vue';
@@ -19,6 +19,17 @@ onMounted(() => {
 const replaceByDefault = (e) => {
   e.target.src = defaultImg
 }
+
+const detailsKeys = computed(() => {
+  return Object.keys(detail.value).filter(e => e !== 'name')
+})
+
+const capitalizeWords = (str) => {
+  return str.split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 </script>
 
 <template>
@@ -27,7 +38,6 @@ const replaceByDefault = (e) => {
       <h3 class="title">
         {{ detail.name }}
       </h3>
-
       <div class="detail">
         <div >
           <img
@@ -35,46 +45,14 @@ const replaceByDefault = (e) => {
             @error="replaceByDefault"
             class="detail__image"
           />
-  
         </div> 
   
         <div class="detail__info">
           <div class="detail__text">
-            <div class="text">
-              <div class="info">
-                <p class="desc__title">Model</p>
-                <p class="desc">{{ detail.model }}</p>
-              </div>
-              <div class="info">
-                <p class="desc__title">Manufacturer</p>
-                <p class="desc">{{ detail.manufacturer }}</p>
-              </div>
-           
-              <div class="info">
-                <p class="desc__title">Starship Class</p>
-                <p class="desc">{{ detail.starship_class }}</p>
-              </div>
+            <div class="info" v-for="desc in detailsKeys">
+              <p class="desc__title">{{ capitalizeWords(desc) }}</p>
+              <p class="desc">{{ detail[desc] }}</p>
             </div>
-            <div class="text">
-              <div class="info">
-                <p class="desc__title">Cargo Capacity</p>
-                <p class="desc">{{ detail.cargo_capacity }}</p>
-              </div>
-              <div class="info">
-                <p class="desc__title">Passengers</p>
-                <p class="desc">{{ detail.passengers }}</p>
-              </div>
-              <div class="info">
-                <p class="desc__title">Hyperdrive Rating</p>
-                <p class="desc">{{ detail.hyperdrive_rating }}</p>
-              </div>
-              
-              <div class="info">
-                <p class="desc__title">Max Atmosphere Speed</p>
-                <p class="desc">{{ detail.max_atmosphering_speed }}</p>
-              </div>
-            </div>
-  
           </div>
         </div>
 
@@ -102,7 +80,6 @@ const replaceByDefault = (e) => {
 .detail__image {
   max-width: 500px;
   object-fit: cover;
-  /* padding: 0 8px; */
   height: 100%;
 }
 .detail__info {

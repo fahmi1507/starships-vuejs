@@ -1,14 +1,14 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import ListStarships from '../components/ListStarships.vue'
+import StarshipList from '../views/StarshipList.vue'
 import StarshipDetail from '../components/StarshipDetail.vue'
-import PageNotFound from '../components/PageNotFound.vue'
+import PageNotFound from '../views/PageNotFound.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: ListStarships
+    component: StarshipList
   },
   {
     path: '/starships/:id',
