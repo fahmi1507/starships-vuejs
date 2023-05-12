@@ -1,5 +1,4 @@
 <script setup>
-
 </script>
 
 <template>
@@ -13,7 +12,6 @@
 .layout {
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 8px;
-  min-height: 100vh;
+  padding: 32px 8px;
 }
 </style>

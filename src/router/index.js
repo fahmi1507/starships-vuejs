@@ -2,6 +2,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import ListStarships from '../components/ListStarships.vue'
 import StarshipDetail from '../components/StarshipDetail.vue'
+import PageNotFound from '../components/PageNotFound.vue'
 
 const routes = [
   {
@@ -14,6 +15,7 @@ const routes = [
     name: 'detail',
     component: StarshipDetail
   },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: PageNotFound },
 ]
 
 const router = createRouter({

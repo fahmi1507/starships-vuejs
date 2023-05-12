@@ -28,4 +28,9 @@ body {
 
 a {
   text-decoration: none;
+  color: #fff;
+}
+
+.router-link-active.router-link-exact-active {
+  color: #FFD523;
 }
