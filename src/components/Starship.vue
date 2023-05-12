@@ -17,7 +17,6 @@
 
 <style scoped>
 .starship {
-  /* width: 80%; */
   height: 75px;
   background-color: #151515;
   color: #FFD523;
@@ -26,14 +25,26 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition:0.3s;
+}
+
+.starship:hover p {
+  transform: scaleY(1.02)
+}
+
+.starship:hover {
+  transform: scale(1.02);
+  transform-origin: bottom;
+  background-color: #232323;
+
 }
 
 .name {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .model {
-  color: #b59819;
+  color: #FCF55F
 }
 </style>

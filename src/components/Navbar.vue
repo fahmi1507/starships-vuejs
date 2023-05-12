@@ -5,7 +5,9 @@ import logo from '../assets/images/logo.jpg'
 <template>
   <nav class="navbar">
     <div class="nav-menu">
-      <img :src="logo" alt="logo" width="120">
+      <router-link to="/">
+        <img :src="logo" alt="logo" width="120">
+      </router-link>
 
       <div class="nav-items">
         <router-link to="/">home</router-link>
@@ -23,6 +25,7 @@ import logo from '../assets/images/logo.jpg'
   background-color: #000;
   height: 100%;
   padding: 16px;
+  margin-bottom: 12px;
 }
 
 .nav-menu {

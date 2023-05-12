@@ -1,76 +1,104 @@
 <script setup>
 import { onMounted, ref, onUnmounted, computed } from 'vue';
 import Starship from './Starship.vue';
-import { getStarships } from '../api/getStarships';
+import { getStarships, getStarshipByKeyword } from '../api/getStarships';
 import Layout from './Layout.vue';
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
+import { debounce } from 'debounce'
 
 const starships = ref([])
-const listEl = ref(null)
-const count = ref(1)
+const count = ref(2)
+const noMoreData = ref(false)
 const userInput = ref('')
-
-const filteredStarhips = computed(() => {
-  let filter = userInput.value
-
-  if (!filter.length) return starships.value
-  return starships.value.filter(s => {
-      return `${s.name} ${s.model}`.toLowerCase().includes(filter.toLowerCase())
-    }
-  )
-})
-
+const noResults = ref(false)
 
 onMounted(() => {
   getStarships()
-  .then(data => starships.value.push(...data))
+  .then(data => updateStarships(data))
 })
+
+const updateStarships = (data) => {
+  if (data.length === 0) noMoreData.value = true
+  starships.value.push(...data)
+}
 
 const getMoreStarships = async () => {
-  count.value++
-  getStarships(count.value)
-  .then(data => starships.value.push(...data))
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
-
-const handleScroll = (e) => {
-  let element = listEl.value
-
-  if (element && element.getBoundingClientRect().bottom === window.innerHeight) {
-    getMoreStarships()
+  if (userInput.value) {
+    getStarshipByKeyword(userInput.value, count.value)
+    .then(data => {
+      updateStarships(data)
+    })
+  } else {
+    getStarships(count.value)
+    .then(data => {
+      updateStarships(data)
+    })
   }
+  count.value++
 }
 
+const loadData = () => {
+  if (starships.value.length === 0) return 
+  if (noMoreData.value) return
+  getMoreStarships(count.value)
+}
+
+const searchInput = debounce((e) => {
+  noMoreData.value = false
+  count.value = 2
+  noResults.value = false
+  getStarshipByKeyword(e.target.value)
+  .then(data => {
+    if (data.length === 0) noResults.value = true
+    starships.value = data
+  })
+}, 1000)
 </script>
 
 <template>
   <Layout>
     <div class="group">      
-      <input type="text" v-model="userInput">
+      <input type="text" @input="searchInput" v-model="userInput">
       <span class="highlight"></span>
       <span class="bar"></span>
-      <label>Search Name or Model</label>
+      <label>Search by Name or Model</label>
     </div>
-    <div ref="listEl">
+    <div>
       <Starship
-        v-for="(starship) in filteredStarhips"
+        v-for="(starship) in starships"
         :starship="starship"
         :key="starship.model"
       />
+      <div class="loading">
+        <InfiniteLoading 
+          @infinite="loadData"
+          v-if="!noMoreData && !noResults"
+        />
+        <p
+          v-if="starships.length >= 10 && noMoreData"
+        >
+          That's All!
+        </p>
+        <p
+          v-if="noResults"
+        >
+          No Results Found
+        </p>
+      </div>
     </div>
   </Layout>
 </template>
 
 
 <style scoped>
-
-
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: whitesmoke;
+  font-size: 18px;
+}
 /* form starting stylings ------------------------------- */
 .group 			  { 
   position: relative; 
@@ -86,7 +114,7 @@ input 				{
   border:none;
   border-bottom:1px solid #757575;
   background: transparent;
-  color: #fff;
+  color: #FFEA00;
 
 }
 input:focus 		{ outline:none; }
