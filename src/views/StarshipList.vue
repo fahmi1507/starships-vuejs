@@ -8,15 +8,24 @@ import Starship from '../components/Starship.vue';
 import { getStarships, getStarshipByKeyword } from '../api/getStarships';
 import { computed } from '@vue/reactivity';
 
+// refs
 const starships = ref([])
 const count = ref(2)
 const noMoreData = ref(false)
 const userInput = ref('')
 const noResults = ref(false)
+const showSearchBar = ref(false)
 
-onMounted(() => {
-  fetchStarShips()
-})
+// computed
+const fullPage = computed(() => starships.value.length === 0 ? 65 : 0)
+const showInfiniteLoading = computed(() => !noMoreData.value && !noResults.value)
+
+onMounted(() => initData())
+
+const initData = async () => {
+  await fetchStarShips()
+  showSearchBar.value = true
+}
 
 const fetchStarShips = async (page) => {
   const data = await getStarships(page)
@@ -51,8 +60,6 @@ const loadData = () => {
   getMoreStarships(count.value)
 }
 
-const fullPage = computed(() => starships.value.length === 0 ? 65 : 0)
-
 const searchInput = debounce((e) => {
   noMoreData.value = false
   count.value = 2
@@ -67,7 +74,10 @@ const searchInput = debounce((e) => {
 
 <template>
   <Layout>
-    <div class="group">      
+    <div 
+      class="group"
+      v-if="showSearchBar"
+    >      
       <input type="text" @input="searchInput" v-model="userInput">
       <span class="highlight"></span>
       <span class="bar"></span>
@@ -85,7 +95,7 @@ const searchInput = debounce((e) => {
       >
         <InfiniteLoading 
           @infinite="loadData"
-          v-if="!noMoreData && !noResults"
+          v-show="showInfiniteLoading"
         />
         <p v-if="starships.length >= 10 && noMoreData">
           That's all!
