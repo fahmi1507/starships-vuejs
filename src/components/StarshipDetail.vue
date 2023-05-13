@@ -41,11 +41,11 @@ await fetchData()
         {{ detail.name }}
       </h3>
       <div class="detail">
-        <div >
+        <div class="detail__image">
           <img
             :src="imageUrl"
             @error="replaceByDefault"
-            class="detail__image"
+            
           />
         </div> 
   
@@ -84,8 +84,12 @@ await fetchData()
 
 .detail__image {
   max-width: 500px;
-  object-fit: cover;
+}
+
+.detail__image > img {
+  width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 .detail__info {
   width: 100%;  
