@@ -6,6 +6,7 @@ import "v3-infinite-loading/lib/style.css";
 import { debounce } from 'debounce'
 import Starship from '../components/Starship.vue';
 import { getStarships, getStarshipByKeyword } from '../api/getStarships';
+import { computed } from '@vue/reactivity';
 
 const starships = ref([])
 const count = ref(2)
@@ -14,26 +15,32 @@ const userInput = ref('')
 const noResults = ref(false)
 
 onMounted(() => {
-  getStarships()
-  .then(data => updateStarships(data))
+  fetchStarShips()
 })
 
+const fetchStarShips = async (page) => {
+  const data = await getStarships(page)
+  updateStarships(data)
+}
+
+const fetchByKeyword = async (keyword, page) => {
+  const data = await getStarshipByKeyword(keyword, page)
+  updateStarships(data)
+}
+
 const updateStarships = (data) => {
-  if (data.length === 0) noMoreData.value = true
+  if (data.length === 0) {
+    noMoreData.value = true
+    return;
+  }
   starships.value.push(...data)
 }
 
 const getMoreStarships = async () => {
   if (userInput.value) {
-    getStarshipByKeyword(userInput.value, count.value)
-    .then(data => {
-      updateStarships(data)
-    })
+    fetchByKeyword(userInput.value, count.value)
   } else {
-    getStarships(count.value)
-    .then(data => {
-      updateStarships(data)
-    })
+    fetchStarShips(count.value)
   }
   count.value++
 }
@@ -43,6 +50,8 @@ const loadData = () => {
   if (noMoreData.value) return
   getMoreStarships(count.value)
 }
+
+const fullPage = computed(() => starships.value.length === 0 ? 65 : 0)
 
 const searchInput = debounce((e) => {
   noMoreData.value = false
@@ -70,7 +79,10 @@ const searchInput = debounce((e) => {
         :starship="starship"
         :key="starship.model"
       />
-      <div class="loading">
+      <div 
+        class="loading"
+        :style="{ minHeight: fullPage + 'vh' }"
+      >
         <InfiniteLoading 
           @infinite="loadData"
           v-if="!noMoreData && !noResults"
@@ -94,6 +106,11 @@ const searchInput = debounce((e) => {
   justify-content: center;
   color: #fff;
   font-size: 20px;
+}
+
+.spinner {
+  width: 200px;
+  height: 200px;
 }
 /* form starting stylings ------------------------------- */
 .group 			  { 

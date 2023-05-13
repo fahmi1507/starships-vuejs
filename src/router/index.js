@@ -1,7 +1,7 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router'
 import StarshipList from '../views/StarshipList.vue'
-import StarshipDetail from '../components/StarshipDetail.vue'
+import StarshipDetailPage from '../views/StarshipDetailPage.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 
 const routes = [
@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/starships/:id',
     name: 'detail',
-    component: StarshipDetail
+    component: StarshipDetailPage
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: PageNotFound },
 ]

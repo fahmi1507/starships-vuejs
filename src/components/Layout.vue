@@ -13,5 +13,6 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 8px;
+  min-height: 80vh;
 }
 </style>

@@ -11,11 +11,6 @@ const { id } = route.params
 
 const imageUrl = ref(`https://starwars-visualguide.com/assets/img/starships/${id}.jpg`)
 
-onMounted(() => {
-  getStarshipDetail(id)
-  .then(data => detail.value = data)
-})
-
 const replaceByDefault = (e) => {
   e.target.src = defaultImg
 }
@@ -29,6 +24,13 @@ const capitalizeWords = (str) => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+const fetchData = async () => {
+  const data = await getStarshipDetail(id)
+  detail.value = data
+}
+
+await fetchData()
 
 </script>
 
@@ -49,7 +51,10 @@ const capitalizeWords = (str) => {
   
         <div class="detail__info">
           <div class="detail__text">
-            <div class="info" v-for="desc in detailsKeys">
+            <div class="info" 
+              v-for="desc in detailsKeys"
+              :key="desc.model"
+            >
               <p class="desc__title">{{ capitalizeWords(desc) }}</p>
               <p class="desc">{{ detail[desc] }}</p>
             </div>

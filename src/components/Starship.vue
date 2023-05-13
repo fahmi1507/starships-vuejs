@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <router-link :to="starship.url.slice(22)">
+  <router-link data-testid="starship" :to="starship.url.slice(22)">
     <div class="starship">
       <div>
         <p class="name">{{ starship.name }}</p>
