@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="coming__soon">
-      <h1>COMING SOON</h1>
+      <h1>Not Found</h1>
     </div>
   </div>
 </template>
