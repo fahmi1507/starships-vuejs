@@ -10,7 +10,7 @@ import logo from '../assets/images/logo.jpg'
       </router-link>
 
       <div class="nav-items">
-        <router-link to="/">home</router-link>
+        <router-link to="/">House</router-link>
         <router-link to="/about">about</router-link>
         <router-link to="/contact">contact</router-link>
       </div>
